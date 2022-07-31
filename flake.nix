@@ -18,7 +18,7 @@
         config = { allowUnfree = true; };
       };
     in {
-      darwinConfigurations {
+      darwinConfigurations = {
         "darios-MacBook-Pro" = darwin.lib.darwinSystem {
           inherit system;
           modules = [ ./darwin.nix ];
