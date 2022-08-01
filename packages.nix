@@ -27,4 +27,5 @@ with pkgs; [
   unzip
   vim
   zip
+  iterm2
 ]

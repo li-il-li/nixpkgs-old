@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, nixpkgs, ... }:
 {
   # Its me
   users.users.dario-nix = {
@@ -8,13 +8,21 @@
     shell = pkgs.zsh;
   };
 
-  nix.trustedUsers = [ "@admin", "dario-nix" ];
+  nix = {
+    trustedUsers = [ "@admin" "dario-nix" ];
+    package = pkgs.nixUnstable;
+    gc.user = "root";
+    # Highly recommend adding these to save keystrokes
+    # at the command line
+    extraOptions = ''
+      experimental-features = nix-command flakes
+    '';
+  };
 
   # Make sure the nix daemon always runs
   services.nix-daemon.enable = true;
-  # Installs a version of nix, that dosen't need "experimental-features = nix-command flakes" in /etc/nix/nix.conf
-  services.nix-daemon.package = pkgs.nixFlakes;
-  
+  services.activate-system.enable = true;
+
   # if you use zsh (the default on new macOS installations),
   # you'll need to enable this so nix-darwin creates a zshrc sourcing needed environment changes
   programs.zsh.enable = true;
@@ -24,14 +32,14 @@
   homebrew.enable = true;
   homebrew.autoUpdate = true;
   homebrew.cleanup = "uninstall";
-  homebrew.brewPrefix = "/opt/homebrew/bin";
   homebrew.casks = pkgs.callPackage ./casks.nix {};
 
   # Enable fonts dir
   fonts.fontDir.enable = true;
 
+
   system = {
-    stateVersion = 1;
+    stateVersion = 4;
 
     defaults = {
       dock = {

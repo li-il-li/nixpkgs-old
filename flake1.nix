@@ -27,28 +27,20 @@
           system = system.x86_64-darwin;
           modules = [
             ./darwin.nix
-            # `home-manager` module
-            home-manager.darwinModules.home-manager
-            {
-              # `home-manager` config
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users.dario-nix = import ./home.nix;            
-            }
           ];
           inputs = { inherit darwin home-manager nixpkgs; };
         };
       };
 
-      #homeConfigurations.dario-nix = home-manager.lib.homeManagerConfiguration {
-      #  inherit system;
-      #  pkgs = nixpkgs.legacyPackages.${system};
+      homeConfigurations.dario-nix = home-manager.lib.homeManagerConfiguration {
+        inherit system;
+        pkgs = nixpkgs.legacyPackages.${system};
 
-      #  # Specify your home configuration modules here, for example,
-      #  # the path to your home.nix.
-      #  modules = [
-      #    ./home.nix
-      #  ];
-      #};
+        # Specify your home configuration modules here, for example,
+        # the path to your home.nix.
+        modules = [
+          ./home.nix
+        ];
+      };
     };
 }
