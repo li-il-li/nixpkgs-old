@@ -3,6 +3,7 @@
 with pkgs; [
   bat # A cat(1) clone with syntax highlighting
   bottom
+  #commitizen
   coreutils
   du-dust
   font-awesome
@@ -14,9 +15,13 @@ with pkgs; [
   home-manager
   htop
   iftop
+  iterm2
   jq
+  neovim
+  nnn
   openssh
   pandoc
+  pinentry # Insert pin for pgp key
   python3
   ripgrep
   slack
@@ -27,5 +32,4 @@ with pkgs; [
   unzip
   vim
   zip
-  iterm2
 ]

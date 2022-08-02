@@ -8,4 +8,5 @@
   "brave-browser"
   "zotero"
   "alfred"
+  "zoom"
 ]

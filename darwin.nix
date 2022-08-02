@@ -1,15 +1,15 @@
 { config, pkgs, nixpkgs, ... }:
 {
   # Its me
-  users.users.dario-nix = {
-    name = "dario-nix";
-    home = "/Users/dario-nix";
+  users.users.dario = {
+    name = "dario";
+    home = "/Users/dario";
     isHidden = false;
     shell = pkgs.zsh;
   };
 
   nix = {
-    trustedUsers = [ "@admin" "dario-nix" ];
+    trustedUsers = [ "@admin" "dario" ];
     package = pkgs.nixUnstable;
     gc.user = "root";
     # Highly recommend adding these to save keystrokes
