@@ -18,12 +18,15 @@
 
       pkgs = import nixpkgs {
         inherit system;
-        config = { allowUnfree = true; };
+        config = { 
+          allowUnfree = true;
+          allowBroken = true;
+        };
       };
 
     in {
       darwinConfigurations = {
-        darios-MacBook-Pro = darwin.lib.darwinSystem {
+        staff-net-nw-0326 = darwin.lib.darwinSystem {
           inherit system pkgs;
           modules = [
             ./darwin.nix

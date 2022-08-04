@@ -8,6 +8,11 @@
   };
 
   programs = {
+    # scd daemon / smart card
+    # https://github.com/NixOS/nixpkgs/issues/155629
+    gpg.scdaemonSettings.disable-ccid = true;
+    gpg.enable = true;
+
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
 
@@ -38,6 +43,20 @@
       export PATH=$NIX_USER_PROFILE_DIR/profile/bin:$PATH
       export PATH=$HOME/bin:$PATH
 
+      # GPG
+      export GPG_TTY=$(tty)
+      #export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+      #gpgconf --launch gpg-agent
+
+      # Openstack
+      export OS_AUTH_URL=https://keystone.cloud.switch.ch:5000/v3
+      export OS_IDENTITY_API_VERSION=3
+      export OS_USERNAME="dario.wirtz@sdsc.ethz.ch"
+      export OS_PROJECT_NAME="renku_personal-dario-wirtz"
+      export OS_REGION_NAME=ZH
+      export OS_PROJECT_DOMAIN_NAME=Default
+      export OS_USER_DOMAIN_NAME=Default
+
       # bat is a better cat
       alias cat=bat
 
@@ -52,7 +71,7 @@
       enable = true;
       ignores = [ "*.swp" ];
       userName = "Dario Wirtz";
-      userEmail = "dario.wirtz@hey.com";
+      userEmail = "dario.wirtz@sdsc.ethz.ch";
       lfs = {
         enable = true;
       };

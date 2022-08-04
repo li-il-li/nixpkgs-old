@@ -10,6 +10,7 @@ with pkgs; [
   gcc
   git-filter-repo
   gnupg
+  graphviz
   hack-font
   highlight
   home-manager
@@ -17,11 +18,18 @@ with pkgs; [
   iftop
   iterm2
   jq
+  kubectl
+  kubernetes-helm
+  kustomize
+  k9s
   neovim
   nnn
+  openstackclient
   openssh
   pandoc
+  packer
   pinentry # Insert pin for pgp key
+  pinentry_mac
   python3
   ripgrep
   slack
