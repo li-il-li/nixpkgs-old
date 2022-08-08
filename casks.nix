@@ -1,12 +1,15 @@
 { ... }:
 
 [
-  "slack"
-  "telegram"
-  "spotify"
-  "visual-studio-code"
-  "brave-browser"
-  "zotero"
+  "alacritty"
   "alfred"
+  "alt-tab"
+  "brave-browser"
+  "slack"
+  "spotify"
+  "stats"
+  "telegram"
+  "visual-studio-code"
   "zoom"
+  "zotero"
 ]
