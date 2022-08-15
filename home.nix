@@ -15,6 +15,9 @@ rec {
   xdg.configFile."nvim/colors".source = mkOutOfStoreSymlink "${home.homeDirectory}/nixpkgs/configs/nvim/colors";
   xdg.configFile."nvim/lua".source = mkOutOfStoreSymlink "${home.homeDirectory}/nixpkgs/configs/nvim/lua";
 
+  # Load xlpr configuration
+  xdg.configFile."xlpr/init.lua".source = mkOutOfStoreSymlink "${home.homeDirectory}/nixpkgs/configs/xlpr/init.lua";
+
   programs = {
     # scd daemon / smart card
     # https://github.com/NixOS/nixpkgs/issues/155629
@@ -23,6 +26,17 @@ rec {
 
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
+
+    # nnn
+    nnn = {
+      enable = true;
+      package = pkgs.nnn.override ({ withNerdIcons = true; });
+      bookmarks = {
+        d = "~/Downloads";
+        s = "~/SDSC";
+        n = "~/nixpkgs";
+      };
+    };
 
     # Alacritty
     alacritty = {
@@ -119,6 +133,7 @@ rec {
     # https://direnv.net
     # https://rycee.gitlab.io/home-manager/options.html#opt-direnv.enable
     direnv.enable = true;
+    direnv.enableZshIntegration = true;
     direnv.nix-direnv.enable = true;
 
     # Starship (Shell prompt)
@@ -143,18 +158,20 @@ rec {
       };
     };
 
+    # SSH
+    ssh = {
+      enable = true;
+      # pinentry bug fix, wrong tty:
+      # https://unix.stackexchange.com/a/499133
+      extraConfig = ''
+        Match host * exec "gpg-connect-agent UPDATESTARTUPTTY /bye"
+      '';
+    };
+
     zsh.enable = true;
     zsh.autocd = false;
     #zsh.cdpath = [ "~/State/Projects/Code/" ];
 
-
-    # Plugins
-    zsh.plugins = [
-      {
-        name = "zsh-autocomplete";
-        src = pkgs.zsh-autocomplete;
-      }
-    ];
 
     #zsh.dirHashes = {
     #  Code = "$HOME/State/Projects/Code";
@@ -178,6 +195,13 @@ rec {
       #export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
       #gpgconf --launch gpg-agent
 
+      # SOPS
+      export SOPS_PGP_FP="9A8F 2B1C 74E0 30CB BA76  8D03 4B82 38C0 BA57 5FAE"
+      SOPS_GPG_EXEC="gpg"
+
+      # man pages in nvim
+      export MANPAGER='nvim +Man!'
+
       # Openstack
       export OS_AUTH_URL=https://keystone.cloud.switch.ch:5000/v3
       export OS_IDENTITY_API_VERSION=3
@@ -200,10 +224,43 @@ rec {
       # https://nixos.wiki/wiki/Zsh#Zsh-autocomplete_not_working
       # bindkey "''${key[Up]}" up-line-or-search
 
+      # Quickly setup nix-direnv
+      nixify() {
+        if [ ! -e ./.envrc ]; then
+          echo "use nix" > .envrc
+          direnv allow
+        fi
+        if [[ ! -e shell.nix ]] && [[ ! -e default.nix ]]; then
+          cat > default.nix <<'EOF'
+      with import <nixpkgs> {};
+      mkShell {
+        nativeBuildInputs = [
+          bashInteractive
+        ];
+      }
+      EOF
+          vim default.nix
+        fi
+      }
+      flakify() {
+        if [ ! -e flake.nix ]; then
+          nix flake new -t github:nix-community/nix-direnv .
+        elif [ ! -e .envrc ]; then
+          echo "use flake" > .envrc
+          direnv allow
+        fi
+        vim flake.nix
+      }
+
       # Enable zoxide
       eval "$(zoxide init zsh)"
     '';
 
+    # zsh plugins through nixpkgs
+    zsh.initExtra = ''
+      source ${pkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
+      #source ${pkgs.zsh-autocomplete}/share/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+    '';
     git = {
       enable = true;
       ignores = [ "*.swp" ];
@@ -220,6 +277,22 @@ rec {
         };
         pull.rebase = true;
         rebase.autoStash = true;
+      };
+      delta = {
+        enable = true;
+        options = {
+          decorations = { 
+            commit-decoration-style = "bold yellow box ul";
+            file-decoration-style = "none";
+            file-style = "bold yellow ul";
+          };
+          features = "decorations";
+          whitespace-error-style = "22 reverse";
+          line-numbers = true;
+          side-by-side = true;
+          navigate = true;
+        };
+
       };
     };
     zoxide.enable = true;

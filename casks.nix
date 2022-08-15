@@ -5,6 +5,7 @@
   "alfred"
   "alt-tab"
   "brave-browser"
+  #"quarto"
   "slack"
   "spotify"
   "stats"

@@ -76,10 +76,10 @@ in
         window_opacity_duration = 0.0;
         active_window_opacity = 1.0;
         normal_window_opacity = 0.95;
-        window_border = "off";
-        window_border_width = 1;
-        active_window_border_color = "#ECF408";
-        normal_window_border_color = "0xff555555";
+        window_border = "on";
+        window_border_width = 7;
+        active_window_border_color = "0xFFE5CA66";
+        normal_window_border_color = "0xFF000000";
         insert_feedback_color = "0xffd75f5f";
         split_ratio = 0.5;
         auto_balance = "off";
@@ -130,6 +130,10 @@ in
         shift + alt - 2 : yabai -m window --space 2; yabai -m space --focus 2
         shift + alt - 3 : yabai -m window --space 3; yabai -m space --focus 3
         shift + alt - 4 : yabai -m window --space 4; yabai -m space --focus 4
+
+        # Focus worksapce
+        alt - 1 : yabai -m space --focus 1;
+        alt - 2 : yabai -m space --focus 2;
         
         # Resize windows
         lctrl + alt - h : yabai -m window --resize left:-50:0; \
@@ -221,6 +225,11 @@ in
     ];
     variables = {
       TERMINFO_DIRS = "${pkgs.alacritty.terminfo.outPath}/share/terminfo";
+      EDITOR = "nvim";
+    };
+    shellAliases = {
+      vim = "nvim";
+      vi = "nvim";
     };
   };
 }
