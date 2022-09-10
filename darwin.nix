@@ -77,8 +77,8 @@ in
         active_window_opacity = 1.0;
         normal_window_opacity = 0.95;
         window_border = "on";
-        window_border_width = 7;
-        active_window_border_color = "0xFFE5CA66";
+        window_border_width = 5;
+        active_window_border_color = "0xFF808080";
         normal_window_border_color = "0xFF000000";
         insert_feedback_color = "0xffd75f5f";
         split_ratio = 0.5;
@@ -228,6 +228,7 @@ in
       EDITOR = "nvim";
     };
     shellAliases = {
+      ls = "lsd";
       vim = "nvim";
       vi = "nvim";
     };

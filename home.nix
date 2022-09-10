@@ -11,12 +11,10 @@ rec {
   };
 
   # Load neovim configuration
-  xdg.configFile."nvim/init.lua".source = mkOutOfStoreSymlink "${home.homeDirectory}/nixpkgs/configs/nvim/init.lua";
+  xdg.configFile."nvim/init_lua.lua".source = mkOutOfStoreSymlink "${home.homeDirectory}/nixpkgs/configs/nvim/init.lua";
   xdg.configFile."nvim/colors".source = mkOutOfStoreSymlink "${home.homeDirectory}/nixpkgs/configs/nvim/colors";
   xdg.configFile."nvim/lua".source = mkOutOfStoreSymlink "${home.homeDirectory}/nixpkgs/configs/nvim/lua";
 
-  # Load xlpr configuration
-  xdg.configFile."xlpr/init.lua".source = mkOutOfStoreSymlink "${home.homeDirectory}/nixpkgs/configs/xlpr/init.lua";
 
   programs = {
     # scd daemon / smart card
@@ -27,6 +25,27 @@ rec {
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
 
+    # neovim
+    # plugins are installed through nix
+    # configuration imperatively
+    neovim = {
+      enable = true;
+      viAlias = true;
+      vimAlias = true;
+      vimdiffAlias = true;
+      withPython3 = true;
+
+      extraConfig =
+      ''
+      luafile ~/.config/nvim/init_lua.lua
+      '';
+
+      plugins = with pkgs.vimPlugins; [
+        plenary-nvim
+        packer-nvim
+      ];
+    };
+
     # nnn
     nnn = {
       enable = true;
@@ -36,6 +55,33 @@ rec {
         s = "~/SDSC";
         n = "~/nixpkgs";
       };
+    };
+
+    # tmux
+    tmux = {
+      enable = true;
+      #keyMode = "vi";
+      clock24 = true;
+      disableConfirmationPrompt = true;
+      newSession = true;
+      # https://www.reddit.com/r/vim/comments/40257u/delay_on_esc_with_tmux_and_vim/
+      escapeTime = 0;
+      sensibleOnTop = true;
+      plugins = with pkgs; [
+        tmuxPlugins.vim-tmux-navigator
+        tmuxPlugins.tmux-thumbs
+        {
+          plugin = tmuxPlugins.resurrect;
+          extraConfig = "set -g @resurrect-strategy-nvim 'session'";
+        }
+        {
+          plugin = tmuxPlugins.continuum;
+          extraConfig = ''
+            set -g @continuum-restore 'on'
+            set -g @continuum-save-interval '60' # minutes
+          '';
+        }
+      ];
     };
 
     # Alacritty
@@ -54,12 +100,16 @@ rec {
        #     - buttonless: Title bar, transparent background and no title bar buttons
         window.decorations = "buttonless";
         window.padding = {
-          x = 10;
-          y = 10;
+          x = 15;
+          y = 15;
         };
         window.dimensions = {
           lines = 30;
           columns = 150;
+        };
+        # https://gist.github.com/andersevenrud/015e61af2fd264371032763d4ed965b6
+        env = {
+          TERM = "xterm-256color";
         };
         key_bindings = [
           {
@@ -77,11 +127,12 @@ rec {
 
         font = {
           normal = {
-            family = "FiraCode Nerd Font";
+            #family = "FiraCode Nerd Font";
+            family = "InconsolataGo Nerd Font";
           };
-          size = 13;
+          size = 17;
           offset = {
-            y = 5;
+            y = 7;
           };
         };
         # Moonfly Theme
@@ -152,8 +203,14 @@ rec {
         # package.disabled = true;
 
         directory = {
-	  truncation_length = 8;
-	  truncation_symbol = "…/";
+	        truncation_length = 8;
+	        truncation_symbol = "…/";
+        };
+
+        openstack = {
+          format = "on [$symbol$cloud(\\($project\\))]($style) ";
+          style = "bold yellow";
+          symbol = "☁️ ";
         };
       };
     };
@@ -196,7 +253,7 @@ rec {
       #gpgconf --launch gpg-agent
 
       # SOPS
-      export SOPS_PGP_FP="9A8F 2B1C 74E0 30CB BA76  8D03 4B82 38C0 BA57 5FAE"
+      #export SOPS_PGP_FP="9A8F 2B1C 74E0 30CB BA76  8D03 4B82 38C0 BA57 5FAE"
       SOPS_GPG_EXEC="gpg"
 
       # man pages in nvim

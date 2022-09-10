@@ -14,6 +14,7 @@ with pkgs; [
   duf
   exa
   fd
+  fluxcd
   font-awesome
   fzf
   gh
@@ -42,7 +43,8 @@ with pkgs; [
   navi
   ncdu_2
   ncspot
-  neovim
+  #neovim
+  #vimPlugins.packer-nvim
   nodejs
   noti # notifications
   openstackclient
@@ -52,10 +54,12 @@ with pkgs; [
   pass
   pinentry # Insert pin for pgp key
   pinentry_mac
+  popeye
   pre-commit
   procs
   python3
   ripgrep
+  rsync
   rustc
   slack
   sops
@@ -63,6 +67,7 @@ with pkgs; [
   terraform
   terraform-ls
   tree
+  tree-sitter
   tmux
   unzip
   vim
@@ -71,4 +76,7 @@ with pkgs; [
   xh
   xplr
   zip
+  # vim dependencies
+  # markdown preview
+  nodePackages.live-server
 ]
