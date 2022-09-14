@@ -26,7 +26,7 @@
 
     in {
       darwinConfigurations = {
-        darios-MacBook-Pro = darwin.lib.darwinSystem {
+        staff-net-nw-1634 = darwin.lib.darwinSystem {
           inherit system pkgs;
           modules = [
             ./darwin.nix

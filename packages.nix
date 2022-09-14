@@ -16,7 +16,6 @@ with pkgs; [
   fd
   fluxcd
   font-awesome
-  fzf
   gh
   #gh-dash
   git-filter-repo

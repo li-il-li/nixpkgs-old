@@ -11,9 +11,12 @@ rec {
   };
 
   # Load neovim configuration
-  xdg.configFile."nvim/init_lua.lua".source = mkOutOfStoreSymlink "${home.homeDirectory}/nixpkgs/configs/nvim/init.lua";
-  xdg.configFile."nvim/colors".source = mkOutOfStoreSymlink "${home.homeDirectory}/nixpkgs/configs/nvim/colors";
-  xdg.configFile."nvim/lua".source = mkOutOfStoreSymlink "${home.homeDirectory}/nixpkgs/configs/nvim/lua";
+  xdg.configFile."nvim/init_lua.lua".source = mkOutOfStoreSymlink "${home.homeDirectory}/nixpkgs/configs/nvim/AstroNvim/init.lua";
+  xdg.configFile."nvim/colors".source = mkOutOfStoreSymlink "${home.homeDirectory}/nixpkgs/configs/nvim/AstroNvim/colors";
+  xdg.configFile."nvim/lua/configs".source = mkOutOfStoreSymlink "${home.homeDirectory}/nixpkgs/configs/nvim/AstroNvim/lua/configs";
+  xdg.configFile."nvim/lua/core".source = mkOutOfStoreSymlink "${home.homeDirectory}/nixpkgs/configs/nvim/AstroNvim/lua/core";
+  xdg.configFile."nvim/lua/default_theme".source = mkOutOfStoreSymlink "${home.homeDirectory}/nixpkgs/configs/nvim/AstroNvim/lua/default_theme";
+  xdg.configFile."nvim/lua/user".source = mkOutOfStoreSymlink "${home.homeDirectory}/nixpkgs/configs/nvim/user";
 
 
   programs = {
@@ -79,6 +82,26 @@ rec {
           extraConfig = ''
             set -g @continuum-restore 'on'
             set -g @continuum-save-interval '60' # minutes
+
+            # Zenbone theme
+            # https://github.com/mcchrish/zenbones.nvim/blob/main/extras/tmux/zenbones_dark.tmux
+            set -g status-left ' #[fg=#B279A7,bold]#{s/root//:client_key_table} '
+            set -g status-right '#[fg=#B279A7,bold] [#S]#[fg=#B279A7,bold] [%d/%m] #[fg=#B279A7,bold][%I:%M%p] '
+            set -g status-style fg='#B279A7',bg='#C6D5CF'
+            
+            set -g window-status-current-style fg='#B279A7',bg='#C6D5CF',bold
+            
+            set -g pane-border-style fg='#B279A7'
+            set -g pane-active-border-style fg='#B279A7'
+            
+            set -g message-style fg='#0F191F',bg='#3D4042'
+            
+            set -g display-panes-active-colour '#B279A7'
+            set -g display-panes-colour '#B279A7'
+            
+            set -g clock-mode-colour '#B279A7'
+            
+            set -g mode-style fg='#0F191F',bg='#3D4042'
           '';
         }
       ];
@@ -128,9 +151,10 @@ rec {
         font = {
           normal = {
             #family = "FiraCode Nerd Font";
-            family = "InconsolataGo Nerd Font";
+            #family = "CaskaydiaCove Nerd Font";
+            family = "Hack Nerd Font";
           };
-          size = 17;
+          size = 15;
           offset = {
             y = 7;
           };
@@ -141,40 +165,34 @@ rec {
         colors = {
           # Default colors
           primary = {
-            background = "#080808";
-            foreground = "#b2b2b2";
-            bright_foreground = "#eeeeee";
+            foreground = "#B4BDC3";
+            background = "#1C1917";
           };
           # Cursor colors
           cursor = {
-            text = "#080808";
-            cursor = "#9e9e9e";
-          };
-          # Selection colors
-          selection = {
-            text = "#080808";
-            background = "#b2ceee";
+            cursor = "#C4CACF";
+            text = "#1C1917";
           };
           # Normal colors
           normal = {
-            black = "#323437";
-            red = "#ff5454";
-            green = "#8cc85f";
-            yellow = "#e3c78a";
-            blue = "#80a0ff";
-            magenta = "#d183e8";
-            cyan = "#79dac8";
-            white = "#c6c6c6";
+            black = "#1C1917";
+            red = "#DE6E7C";
+            green = "#819B69";
+            yellow = "#B77E64";
+            blue = "#6099C0";
+            magenta = "#B279A7";
+            cyan = "#66A5AD";
+            white = "#B4BDC3";
           };
           bright = {
-            black = "#949494";
-            red = "#ff5189";
-            green = "#36c692";
-            yellow = "#c2c292";
-            blue =  "#74b2ff";
-            magenta = "#ae81ff";
-            cyan = "#85dc85";
-            white = "#e4e4e4";
+            black = "#403833";
+            red = "#E8838F";
+            green = "#8BAE68";
+            yellow = "#D68C67";
+            blue =  "#61ABDA";
+            magenta = "#CF86C1";
+            cyan = "#65B8C1";
+            white = "#888F94";
           };
         };
       };
@@ -222,6 +240,12 @@ rec {
       # https://unix.stackexchange.com/a/499133
       extraConfig = ''
         Match host * exec "gpg-connect-agent UPDATESTARTUPTTY /bye"
+        StrictHostKeyChecking no
+
+        # https://github.com/rancher/rke/issues/2290
+        ControlMaster auto
+        ControlPath ~/.ssh/sockets/%r@%h-%p
+        ControlPersist 120
       '';
     };
 
@@ -354,5 +378,20 @@ rec {
     };
     zoxide.enable = true;
     zoxide.enableZshIntegration = true;
+
+    fzf = {
+      enable = true;
+      enableZshIntegration = true;
+      changeDirWidgetCommand = "fd --type d";
+      defaultCommand = "fd --type f";
+      defaultOptions = [ "--height 40%" "--border" ];
+      fileWidgetCommand = "fd --type f";
+      fileWidgetOptions = [ "--preview 'head {}'" ];
+      historyWidgetOptions = [ "--sort" "--exact" ];
+      tmux = {
+        enableShellIntegration = true;
+      };
+    };
+
   };
 }

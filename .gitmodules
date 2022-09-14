@@ -1,0 +1,3 @@
+[submodule "configs/nvim/AstroNvim"]
+	path = configs/nvim/AstroNvim
+	url = git@github.com:AstroNvim/AstroNvim.git
