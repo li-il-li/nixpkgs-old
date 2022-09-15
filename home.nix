@@ -18,6 +18,13 @@ rec {
   xdg.configFile."nvim/lua/default_theme".source = mkOutOfStoreSymlink "${home.homeDirectory}/nixpkgs/configs/nvim/AstroNvim/lua/default_theme";
   xdg.configFile."nvim/lua/user".source = mkOutOfStoreSymlink "${home.homeDirectory}/nixpkgs/configs/nvim/user";
 
+#  services = {
+#    gpg-agent ={
+#      enable = true;
+#      enableExtraSocket = true;
+#    };
+#  };
+
 
   programs = {
     # scd daemon / smart card
@@ -246,6 +253,9 @@ rec {
         ControlMaster auto
         ControlPath ~/.ssh/sockets/%r@%h-%p
         ControlPersist 120
+
+        # secretive
+        IdentityAgent /Users/dario/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh
       '';
     };
 

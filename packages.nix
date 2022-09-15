@@ -19,6 +19,7 @@ with pkgs; [
   gh
   #gh-dash
   git-filter-repo
+  glances
   gnupg
   gpg-tui
   graphviz
@@ -71,6 +72,8 @@ with pkgs; [
   unzip
   vim
   visidata # heavy weight
+  watch
+  wireguard-tools
   #watchexec
   xh
   xplr
