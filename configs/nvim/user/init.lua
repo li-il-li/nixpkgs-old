@@ -293,6 +293,19 @@ local config = {
 				end,
 			},
 
+			{
+				"anuvyklack/windows.nvim",
+				requires = {
+					"anuvyklack/middleclass",
+					"anuvyklack/animation.nvim",
+				},
+				config = function()
+					vim.o.winwidth = 10
+					vim.o.winminwidth = 10
+					require("windows").setup()
+				end,
+			},
+
 			-- We also support a key value style plugin definition similar to NvChad:
 			-- ["ray-x/lsp_signature.nvim"] = {
 			--   event = "BufRead",

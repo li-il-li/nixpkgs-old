@@ -26,6 +26,7 @@ let
   );
 in
 {
+  networking.hostName = "darios-MacBook-Pro";
   # Its me
   users.users.dario = {
     name = "dario";
@@ -42,6 +43,11 @@ in
     # at the command line
     extraOptions = ''
       experimental-features = nix-command flakes
+
+      # Part of macos-builder setup
+      builders = ssh-ng://builder@localhost aarch64-linux /etc/nix/nixbld_ed25519 4 - - - c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUpCV2N4Yi9CbGFxdDFhdU90RStGOFFVV3JVb3RpQzVxQkorVXVFV2RWQ2Igcm9vdEBuaXhvcwo='
+      builders-use-substitutes = true
+
     '';
   };
 
@@ -62,7 +68,7 @@ in
 
     # Yabai window manager
     yabai = {
-      enable = true;
+      enable = false;
       package = yabai;
       enableScriptingAddition = true;
       config = {
@@ -107,7 +113,7 @@ in
 
     # skhd -> Yabai shortcuts
     skhd = {
-      enable = true;
+      enable = false;
       package = pkgs.skhd;
       skhdConfig = ''
         # Navigation
@@ -184,8 +190,8 @@ in
   # bash is enabled by default
 
   # GPG
-  programs.gnupg.agent.enable = true;
-  programs.gnupg.agent.enableSSHSupport = true;
+  # programs.gnupg.agent.enable = true;
+  # programs.gnupg.agent.enableSSHSupport = true;
 
   # We use Homebrew to install impure software only (Mac Apps)
   homebrew.enable = true;
@@ -226,6 +232,7 @@ in
     variables = {
       TERMINFO_DIRS = "${pkgs.alacritty.terminfo.outPath}/share/terminfo";
       EDITOR = "nvim";
+      SSH_AUTH_SOCK = "/Users/dario/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh";
     };
     shellAliases = {
       ls = "lsd";

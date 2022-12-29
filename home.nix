@@ -7,7 +7,7 @@ rec {
     username = "dario"; 
     homeDirectory = "/Users/dario";
     packages = pkgs.callPackage ./packages.nix {};
-    stateVersion = "22.05";
+    stateVersion = "22.11";
   };
 
   # Load neovim configuration
@@ -56,6 +56,11 @@ rec {
       ];
     };
 
+    # nushell
+    nushell = {
+      enable = true;
+    };
+
     # nnn
     nnn = {
       enable = true;
@@ -90,25 +95,105 @@ rec {
             set -g @continuum-restore 'on'
             set -g @continuum-save-interval '60' # minutes
 
-            # Zenbone theme
-            # https://github.com/mcchrish/zenbones.nvim/blob/main/extras/tmux/zenbones_dark.tmux
-            set -g status-left ' #[fg=#B279A7,bold]#{s/root//:client_key_table} '
-            set -g status-right '#[fg=#B279A7,bold] [#S]#[fg=#B279A7,bold] [%d/%m] #[fg=#B279A7,bold][%I:%M%p] '
-            set -g status-style fg='#B279A7',bg='#C6D5CF'
-            
-            set -g window-status-current-style fg='#B279A7',bg='#C6D5CF',bold
-            
-            set -g pane-border-style fg='#B279A7'
-            set -g pane-active-border-style fg='#B279A7'
-            
-            set -g message-style fg='#0F191F',bg='#3D4042'
-            
-            set -g display-panes-active-colour '#B279A7'
-            set -g display-panes-colour '#B279A7'
-            
-            set -g clock-mode-colour '#B279A7'
-            
-            set -g mode-style fg='#0F191F',bg='#3D4042'
+            # vim style tmux config
+            # https://gist.github.com/tsl0922/d79fc1f8097dde660b34
+            # use C-a, since it's on the home row and easier to hit than C-b
+            set-option -g prefix C-a
+            unbind-key C-a
+            bind-key C-a send-prefix
+            set -g base-index 1
+
+            # Easy config reload
+            bind-key R source-file ~/.tmux.conf \; display-message "tmux.conf reloaded."
+
+            # vi is good
+            setw -g mode-keys vi
+
+            # mouse behavior
+            setw -g mouse on
+
+            # https://www.reddit.com/r/vim/comments/75zvux/why_is_vim_background_different_inside_tmux/
+            set -g terminal-overrides ',xterm-256color:Tc'
+            set -g default-terminal "screen-256color"
+            set -as terminal-overrides ',xterm*:sitm=\E[3m'
+
+            bind-key : command-prompt
+            bind-key r refresh-client
+            bind-key L clear-history
+
+            bind-key space next-window
+            bind-key bspace previous-window
+            bind-key enter next-layout
+
+            # use vim-like keys for splits and windows
+            bind-key v split-window -h
+            bind-key s split-window -v
+            bind-key h select-pane -L
+            bind-key j select-pane -D
+            bind-key k select-pane -U
+            bind-key l select-pane -R
+
+            # smart pane switching with awareness of vim splits
+            #bind -n C-h run "(tmux display-message -p '#{pane_current_command}' | grep -iqE '(^|\/)vim$' && tmux send-keys C-h) || tmux select-pane -L"
+            #bind -n C-j run "(tmux display-message -p '#{pane_current_command}' | grep -iqE '(^|\/)vim$' && tmux send-keys C-j) || tmux select-pane -D"
+            #bind -n C-k run "(tmux display-message -p '#{pane_current_command}' | grep -iqE '(^|\/)vim$' && tmux send-keys C-k) || tmux select-pane -U"
+            #bind -n C-l run "(tmux display-message -p '#{pane_current_command}' | grep -iqE '(^|\/)vim$' && tmux send-keys C-l) || tmux select-pane -R"
+            bind -n 'C-\' run "(tmux display-message -p '#{pane_current_command}' | grep -iqE '(^|\/)vim$' && tmux send-keys 'C-\\') || tmux select-pane -l"
+            bind C-l send-keys 'C-l'
+
+            # resize panes
+            # Resize the current pane using Alt + direction
+            bind-key -n M-k resize-pane -U 5
+            bind-key -n M-j resize-pane -D 5
+            bind-key -n M-h resize-pane -L 5
+            bind-key -n M-l resize-pane -R 5
+
+            bind-key C-o rotate-window
+
+            bind-key + select-layout main-horizontal
+            bind-key = select-layout main-vertical
+
+            set-window-option -g other-pane-height 25
+            set-window-option -g other-pane-width 80
+            set-window-option -g display-panes-time 1500
+            set-window-option -g window-status-current-style fg=magenta
+
+            bind-key a last-pane
+            bind-key q display-panes
+            bind-key c new-window
+            bind-key t next-window
+            bind-key T previous-window
+
+            bind-key [ copy-mode
+            bind-key ] paste-buffer
+
+            # Setup 'v' to begin selection as in Vim
+            bind-key -T copy-mode-vi v send -X begin-selection
+            bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel "reattach-to-user-namespace pbcopy"
+
+            # Update default binding of `Enter` to also use copy-pipe
+            unbind -T copy-mode-vi Enter
+            bind-key -T copy-mode-vi Enter send -X copy-pipe-and-cancel "reattach-to-user-namespace pbcopy"
+
+            # Status Bar
+            set-option -g status-interval 1
+            set-option -g status-style bg=black
+            set-option -g status-style fg=white
+            set -g status-left '#[fg=green]#H #[default]'
+            set -g status-right '%a%l:%M:%S %p#[default] #[fg=blue]%Y-%m-%d'
+
+            set-option -g pane-active-border-style fg=yellow
+            set-option -g pane-border-style fg=cyan
+
+            # Set window notifications
+            setw -g monitor-activity on
+            set -g visual-activity on
+
+            # Enable native Mac OS X copy/paste
+            set-option -g default-command "/bin/bash -c 'which reattach-to-user-namespace >/dev/null && exec reattach-to-user-namespace $SHELL -l || exec $SHELL -l'"
+
+            # Allow the arrow key to be used immediately after changing windows
+            set-option -g repeat-time 0
           '';
         }
       ];
@@ -243,19 +328,26 @@ rec {
     # SSH
     ssh = {
       enable = true;
-      # pinentry bug fix, wrong tty:
-      # https://unix.stackexchange.com/a/499133
-      extraConfig = ''
-        Match host * exec "gpg-connect-agent UPDATESTARTUPTTY /bye"
-        StrictHostKeyChecking no
+      forwardAgent = true;
 
-        # https://github.com/rancher/rke/issues/2290
-        ControlMaster auto
-        ControlPath ~/.ssh/sockets/%r@%h-%p
-        ControlPersist 120
+      # https://github.com/rancher/rke/issues/2290
+      controlMaster = "auto";
+      #controlPath = "~/.ssh/%r@%h:%p";
+      controlPath = "/tmp/%r@%h:%p";
+      controlPersist = "10m";
+
+      extraConfig = ''
+        # Add pub-key to ssh-agent
+        AddKeysToAgent yes
+
+        #Match host * exec "gpg-connect-agent UPDATESTARTUPTTY /bye"
+
+        # Automatically add server fingerprint
+        StrictHostKeyChecking no
 
         # secretive
         IdentityAgent /Users/dario/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh
+
       '';
     };
 
@@ -281,6 +373,38 @@ rec {
       export PATH=$NIX_USER_PROFILE_DIR/profile/bin:$PATH
       export PATH=$HOME/bin:$PATH
 
+      # nnn
+      # exit on quit: https://github.com/jarun/nnn/wiki/Basic-use-cases#configure-cd-on-quit
+      n ()
+      {
+          # Block nesting of nnn in subshells
+          if [[ "$(NNNLVL:-0)" -ge 1 ]]; then
+              echo "nnn is already running"
+              return
+          fi
+      
+          # The behaviour is set to cd on quit (nnn checks if NNN_TMPFILE is set)
+          # If NNN_TMPFILE is set to a custom path, it must be exported for nnn to
+          # see. To cd on quit only on ^G, remove the "export" and make sure not to
+          # use a custom path, i.e. set NNN_TMPFILE *exactly* as follows:
+          NNN_TMPFILE="$HOME/.config/nnn/.lastd"
+          #export NNN_TMPFILE="$(XDG_CONFIG_HOME:-$HOME/.config)/nnn/.lastd"
+      
+          # Unmask ^Q (, ^V etc.) (if required, see `stty -a`) to Quit nnn
+          # stty start undef
+          # stty stop undef
+          # stty lwrap undef
+          # stty lnext undef
+      
+          # The backslash allows one to alias n to nnn if desired without making an
+          # infinitely recursive alias
+          \nnn "$@"
+      
+          if [ -f "$NNN_TMPFILE" ]; then
+                  . "$NNN_TMPFILE"
+                  rm -f "$NNN_TMPFILE" > /dev/null
+          fi
+      }
       # GPG
       export GPG_TTY=$(tty)
       #export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)

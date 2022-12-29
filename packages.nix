@@ -1,14 +1,19 @@
 { pkgs }:
 
 with pkgs; [
+  azure-cli
   bat # A cat(1) clone with syntax highlighting
   bottom
   broot
   cz-cli
+  cachix
   cargo
   #convco
   coreutils
+  colima
+  devenv
   direnv
+  docker
   dsq
   du-dust
   duf
@@ -31,20 +36,24 @@ with pkgs; [
   innernet
   jc
   jq
+  jupyter
   kubectl
   kubernetes-helm
   kustomize
+  k6
+  k9s
   lazydocker
   lazygit
   libiconv
+  lima
   lua
   lsd
-  k9s
   navi
   ncdu_2
   ncspot
   #neovim
   #vimPlugins.packer-nvim
+  nixos-generators
   nodejs
   noti # notifications
   openstackclient
@@ -66,6 +75,7 @@ with pkgs; [
   telegram-cli
   terraform
   terraform-ls
+  texlive.combined.scheme-full
   tree
   tree-sitter
   tmux
@@ -73,12 +83,24 @@ with pkgs; [
   vim
   visidata # heavy weight
   watch
+  wget
   wireguard-tools
   #watchexec
   xh
   xplr
+  yubikey-agent
   zip
   # vim dependencies
   # markdown preview
   nodePackages.live-server
+
+
+  ## Python
+  python310Packages.jupyter_core.out
+  python310Packages.python
+  python310Packages.poetry
+  python310Packages.pandas
+  python310Packages.numpy
+
+
 ]
