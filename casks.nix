@@ -8,6 +8,7 @@
   "brave-browser"
   "discord"
   #"docker"
+  "grammarly"
   "quarto"
   "kindle"
   "mathpix-snipping-tool"

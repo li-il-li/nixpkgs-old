@@ -11,7 +11,6 @@ with pkgs; [
   #convco
   coreutils
   colima
-  devenv
   direnv
   docker
   dsq

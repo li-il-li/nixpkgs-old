@@ -36,7 +36,7 @@ in
   };
 
   nix = {
-    trustedUsers = [ "@admin" "dario" ];
+    settings.trustedUsers = [ "@admin" "dario" ];
     package = pkgs.nixUnstable;
     gc.user = "root";
     # Highly recommend adding these to save keystrokes
@@ -45,8 +45,8 @@ in
       experimental-features = nix-command flakes
 
       # Part of macos-builder setup
-      builders = ssh-ng://builder@localhost aarch64-linux /etc/nix/nixbld_ed25519 4 - - - c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUpCV2N4Yi9CbGFxdDFhdU90RStGOFFVV3JVb3RpQzVxQkorVXVFV2RWQ2Igcm9vdEBuaXhvcwo='
-      builders-use-substitutes = true
+      #builders = ssh-ng://builder@localhost aarch64-linux /etc/nix/nixbld_ed25519 4 - - - c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUpCV2N4Yi9CbGFxdDFhdU90RStGOFFVV3JVb3RpQzVxQkorVXVFV2RWQ2Igcm9vdEBuaXhvcwo='
+      #builders-use-substitutes = true
 
     '';
   };
@@ -195,8 +195,8 @@ in
 
   # We use Homebrew to install impure software only (Mac Apps)
   homebrew.enable = true;
-  homebrew.autoUpdate = true;
-  homebrew.cleanup = "uninstall";
+  homebrew.onActivation.autoUpdate = true;
+  homebrew.onActivation.cleanup = "uninstall";
   homebrew.casks = pkgs.callPackage ./casks.nix {};
 
   # Enable fonts dir
@@ -230,7 +230,7 @@ in
       alacritty 
     ];
     variables = {
-      TERMINFO_DIRS = "${pkgs.alacritty.terminfo.outPath}/share/terminfo";
+      #TERMINFO_DIRS = "${pkgs.alacritty.terminfo.outPath}/share/terminfo";
       EDITOR = "nvim";
       SSH_AUTH_SOCK = "/Users/dario/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh";
     };
